@@ -40,15 +40,46 @@ app.get('/clientes', (req, res) => {
     res.json(clientes)
 })
 
+app.put('/clientes', (req, res) => {
+    const id = req.body.id;
+    if (!id) {
+        res.status(400).json({
+            message: 'Id não pode ser nulo'
+        })
+        return;
+    }
+    
+    const index = clientes.findIndex(cliente => cliente.id == id)
+    if (index == -1) {
+        res.status(204)
+    }
 
-//localhost:3000/teste (GET)
-app.get ('/teste', (req, res) => {
-    console.log ("Passando por aqui...")
-    res.send ('Olá!')
+    const nome = req.body.nome;
+    const email = req.body.email;
+    const cliente = {id, nome, email}
+    clientes[index] = cliente
+    
+    res.status(200).json(clientes)
 })
 
+app.delete('/clientes/:id', (req, res) => {
+    const id = req.params.id
+    if (!id) {
+        res.status(400).json({
+            message: 'Id não pode ser nulo'
+        })
+        return;
+    }
 
+    const index = clientes.findIndex(cliente => cliente.id == id)
+    if (index == -1) {
+        res.status(204)
+    }
 
+    clientes.splice(index, 1)
+
+    res.status(200).json(clientes)
+})
 
 const server = http.createServer(app)
 server.listen(porta)
